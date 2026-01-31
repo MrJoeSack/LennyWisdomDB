@@ -5,7 +5,7 @@
     - VECTOR(1024) data type for storing embeddings
     - VECTOR_DISTANCE('cosine', ...) for similarity search
 
-    At 24K chunks, brute-force vector search completes in ~75ms.
+    At 21K chunks, brute-force vector search completes in ~75ms.
     No DiskANN index needed at this scale.
 
     Focused semantic search demos using favorite Lenny's Podcast episodes:
@@ -62,6 +62,7 @@ WHERE ec.episode_id = 83  -- Ebi Atawodi
   AND (ec.chunk_text LIKE '%vision%' OR ec.chunk_text LIKE '%strategy%');
 
 -- Find the most relevant Q&A pairs about product vision
+-- Filter: split_part = 1 to avoid duplicate results from overlapping chunks
 SELECT TOP 5
     'Ebi Atawodi' AS expert,
     LEFT(ec.speaker_question, 150) AS lenny_asks,
@@ -73,6 +74,7 @@ FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
 WHERE e.episode_id = 83
+  AND ec.split_part = 1  -- Only first part of split chunks
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @vision_embedding);
 GO
 
@@ -103,6 +105,7 @@ FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
 WHERE e.episode_id = 218
+  AND ec.split_part = 1
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @ai_embedding);
 GO
 
@@ -132,6 +135,7 @@ FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
 WHERE e.episode_id = 230
+  AND ec.split_part = 1
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @career_embedding);
 GO
 
@@ -161,6 +165,7 @@ FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
 WHERE e.episode_id = 252
+  AND ec.split_part = 1
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @strategy_embedding);
 GO
 
@@ -169,7 +174,7 @@ GO
 -- "Why is data so important for AI products?"
 -- ============================================================================
 
-PRINT '=== DEMO 4: AI & Data (Shaun Clowes - Confluent CPO) ===';
+PRINT '=== DEMO 5: AI & Data (Shaun Clowes - Confluent CPO) ===';
 
 DECLARE @data_embedding VECTOR(1024);
 
@@ -190,15 +195,16 @@ FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
 WHERE e.episode_id = 270
+  AND ec.split_part = 1
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @data_embedding);
 GO
 
 -- ============================================================================
--- DEMO 5: Cross-Episode Semantic Search
+-- DEMO 6: Cross-Episode Semantic Search
 -- "Find the best advice about leadership across all favorite episodes"
 -- ============================================================================
 
-PRINT '=== DEMO 5: Cross-Episode Search - Leadership Advice ===';
+PRINT '=== DEMO 6: Cross-Episode Search - Leadership Advice ===';
 
 DECLARE @leadership_embedding VECTOR(1024);
 
@@ -217,15 +223,16 @@ SELECT TOP 10
 FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
-WHERE e.episode_id IN (83, 218, 230, 252, 270)  -- Favorite episodes
+WHERE e.episode_id IN (83, 218, 230, 252, 270)
+  AND ec.split_part = 1
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @leadership_embedding);
 GO
 
 -- ============================================================================
--- DEMO 6: Compare Perspectives - "What makes a great product?"
+-- DEMO 7: Compare Perspectives - "What makes a great product?"
 -- ============================================================================
 
-PRINT '=== DEMO 6: Multiple Perspectives - Great Products ===';
+PRINT '=== DEMO 7: Multiple Perspectives - Great Products ===';
 
 DECLARE @product_embedding VECTOR(1024);
 
@@ -248,16 +255,17 @@ FROM (
     JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
     JOIN Episodes e ON ec.episode_id = e.episode_id
     WHERE e.episode_id IN (83, 218, 230, 270)
+      AND ec.split_part = 1
 ) ranked
 WHERE rn = 1
 ORDER BY relevance;
 GO
 
 -- ============================================================================
--- DEMO 7: Topic Explorer - What topics do these experts cover?
+-- DEMO 8: Topic Explorer - What topics do these experts cover?
 -- ============================================================================
 
-PRINT '=== DEMO 7: Topic Coverage Across Favorite Episodes ===';
+PRINT '=== DEMO 8: Topic Coverage Across Favorite Episodes ===';
 
 SELECT
     e.guest_name,
@@ -271,10 +279,10 @@ ORDER BY e.episode_id;
 GO
 
 -- ============================================================================
--- DEMO 8: Keyword Search - Find specific mentions
+-- DEMO 9: Keyword Search - Find specific mentions
 -- ============================================================================
 
-PRINT '=== DEMO 8: Keyword Mentions in Favorite Episodes ===';
+PRINT '=== DEMO 9: Keyword Mentions in Favorite Episodes ===';
 
 -- What do these experts say about "metrics"?
 SELECT
