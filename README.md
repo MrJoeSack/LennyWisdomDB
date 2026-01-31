@@ -38,7 +38,6 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 | Embedding Model | snowflake-arctic-embed2 (1024 dim) |
 | Pre-embedded Search Phrases | 73 |
 | Topics | 87 |
-| Typical Query Time | ~75ms |
 
 ## Features
 
@@ -48,7 +47,6 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 | **Hybrid Search** | Full-text (BM25) + vector with Reciprocal Rank Fusion |
 | **Chunk Deduplication** | `qa_group_id` links split chunks to parent Q&A |
 | **Contextualized Embeddings** | Episode/guest context prepended before embedding |
-| **Search Audit** | `SearchLog` + `SearchResults` tables for debugging |
 
 ## Schema
 
@@ -72,12 +70,6 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 - `content_type` - 'intro' or 'main' for pre-filtering
 - `contextualized_text` - enriched text used for embedding
 
-**Audit**
-| Table | Purpose |
-|-------|---------|
-| `SearchLog` | Query history with execution time |
-| `SearchResults` | Retrieved chunks per search with rankings |
-
 ## Chunking Strategy
 
 Each chunk = one complete Q&A exchange (Lenny's question + guest's answer). This preserves conversational context naturally.
@@ -97,7 +89,6 @@ Each chunk = one complete Q&A exchange (Lenny's question + guest's answer). This
 ## Requirements
 
 - SQL Server 2025 RTM with VECTOR support
-- ~2GB disk space
 
 ## Credits
 
