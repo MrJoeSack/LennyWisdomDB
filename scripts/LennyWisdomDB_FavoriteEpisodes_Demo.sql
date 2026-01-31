@@ -15,8 +15,6 @@
     Episode 230: Nikhyl Singhal (Meta VP Product) - Career Building
     Episode 252: Richard Rumelt - Good Strategy, Bad Strategy
     Episode 270: Shaun Clowes (Confluent CPO) - AI & Data
-
-    Note: GitLab (David DeSanto) and Tal Raviv episodes not in current transcript dump.
 */
 
 USE LennyWisdomDB;

@@ -2,7 +2,7 @@
     LennyWisdomDB - Schema Creation Script
 
     A SQL Server 2025 vector search sample database built from Lenny's Podcast transcripts.
-    Contains 24,000+ Q&A chunks with embeddings for semantic search.
+    Contains 21,571 Q&A chunks with embeddings for semantic search.
 
     Prerequisites:
     - SQL Server 2025 with VECTOR data type support
@@ -132,6 +132,18 @@ CREATE TABLE ChunkEmbeddings (
     CONSTRAINT FK_Embeddings_Chunk FOREIGN KEY (chunk_id) REFERENCES EpisodeChunks(chunk_id),
     CONSTRAINT FK_Embeddings_Model FOREIGN KEY (model_id) REFERENCES EmbeddingModels(model_id),
     CONSTRAINT UQ_Chunk_Model UNIQUE (chunk_id, model_id)
+);
+GO
+
+-- ============================================================================
+-- search_phrases - Pre-embedded PM questions for instant search
+-- ============================================================================
+CREATE TABLE search_phrases (
+    search_id INT PRIMARY KEY IDENTITY(1,1),
+    search_phrase NVARCHAR(500) NOT NULL,
+    search_vector VECTOR(1024) NULL,
+    category NVARCHAR(50) NULL,
+    created_date DATETIME2 DEFAULT SYSDATETIME()
 );
 GO
 

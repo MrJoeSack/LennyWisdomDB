@@ -56,9 +56,10 @@ WHERE search_phrase = 'signs you have product market fit and how to find it';
 -- Semantic search across all episodes
 SELECT TOP 10
     e.guest_name,
-    LEFT(ec.chunk_text, 300) AS preview,
+    e.episode_title,
+    LEFT(ec.chunk_text, 300) AS chunk_preview,
     CONCAT('https://youtube.com/watch?v=', e.video_id, '&t=', ec.start_seconds, 's') AS youtube_link,
-    VECTOR_DISTANCE('cosine', ce.embedding, @query_embedding) AS distance
+    CAST(VECTOR_DISTANCE('cosine', ce.embedding, @query_embedding) AS DECIMAL(5,3)) AS distance
 FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
