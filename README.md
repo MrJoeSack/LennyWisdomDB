@@ -92,7 +92,7 @@ Each chunk = one complete Q&A exchange (Lenny's question + guest's answer). This
 | File | Description |
 |------|-------------|
 | [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.0) | Database backup (162MB) |
-| `LennyWisdomDB_Queries.sql` | Demo queries (semantic, hybrid, filtered, dedupe, rerank) |
+| [`LennyWisdomDB_Queries.sql`](scripts/LennyWisdomDB_Queries.sql) | Sample queries (semantic, hybrid, filtered, parent retrieval) |
 
 ## Requirements
 
