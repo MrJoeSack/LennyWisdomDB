@@ -84,7 +84,7 @@ GO
 
 -- ============================================================================
 -- 3. PRE-FILTERED SEARCH
--- Filter by metadata before vector search
+-- Narrow results by topic and date, then rank by vector distance
 -- ============================================================================
 
 DECLARE @query VECTOR(1024);
