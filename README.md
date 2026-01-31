@@ -2,13 +2,22 @@
 
 A SQL Server 2025 vector search sample database built from [Lenny's Podcast](https://www.lennysnewsletter.com/podcast) transcripts. Contains 24,000+ semantically chunked Q&A pairs from 300+ episodes with product leaders like Brian Chesky, Shreyas Doshi, and Marty Cagan.
 
+## SQL Server 2025 Features Used
+
+Uses **RTM (non-preview) features only**:
+
+- `VECTOR(1024)` - Native vector data type for storing embeddings
+- `VECTOR_DISTANCE('cosine', ...)` - Similarity search function
+
+At 24K chunks, brute-force vector search completes in ~75ms. No vector index required at this scale.
+
 ## Database Stats
 
 | Metric | Count |
 |--------|-------|
-| Episodes | 303 |
-| Q&A Chunks | 24,336 |
-| Embeddings | 24,336 |
+| Episodes | 270 |
+| Q&A Chunks | 21,571 |
+| Embeddings | 21,571 |
 | Topics | 87 |
 | Embedding Model | snowflake-arctic-embed2 (1024 dim) |
 
@@ -56,13 +65,15 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query_embedding);
 
 | File | Description |
 |------|-------------|
-| `LennyWisdomDB.bak` | Full database backup with data and embeddings (138MB, Git LFS) |
-| `LennyWisdomDB_Schema.sql` | Database and table creation script |
-| `LennyWisdomDB_SampleQueries.sql` | Example semantic search queries |
-| `lenny_load_episodes.py` | Parse transcripts and load episode metadata |
-| `lenny_load_topics.py` | Load topics from index and map to episodes |
-| `lenny_chunk_qa.py` | Parse Q&A pairs, strip sponsors, apply chunking |
-| `lenny_generate_embeddings.py` | Generate embeddings via Ollama batch API |
+| `LennyWisdomDB.bak` | Full database backup with data and embeddings (~128MB, Git LFS) |
+| `scripts/LennyWisdomDB_Schema.sql` | Database and table creation script |
+| `scripts/LennyWisdomDB_SampleQueries.sql` | Example semantic search queries |
+| `scripts/LennyWisdomDB_FavoriteEpisodes_Demo.sql` | Focused demos on select episodes |
+| `scripts/lenny_load_episodes.py` | Parse transcripts and load episode metadata |
+| `scripts/lenny_load_topics.py` | Load topics from index and map to episodes |
+| `scripts/lenny_chunk_qa.py` | Parse Q&A pairs, strip sponsors, apply chunking |
+| `scripts/lenny_generate_embeddings.py` | Generate embeddings via Ollama batch API |
+| `scripts/lenny_fix_data_quality.py` | Data cleanup script (duplicates, sponsors, etc.) |
 
 ## Requirements
 

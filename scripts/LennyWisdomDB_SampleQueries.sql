@@ -1,16 +1,19 @@
 /*
     LennyWisdomDB - Sample Semantic Search Queries
 
+    SQL Server 2025 Vector Search - RTM (non-preview) features only:
+    - VECTOR(1024) data type for storing embeddings
+    - VECTOR_DISTANCE('cosine', ...) for similarity search
+
     This database contains 24,000+ Q&A chunks from 300+ episodes of Lenny's Podcast,
     embedded with snowflake-arctic-embed2 (1024 dimensions).
+
+    At 24K chunks, brute-force VECTOR_DISTANCE search completes in ~75ms.
+    No vector index required at this scale.
 
     Prerequisites:
     - SQL Server 2025 with VECTOR support
     - Ollama running locally with snowflake-arctic-embed2 model for query embedding
-
-    For production use, create a DiskANN vector index:
-    -- CREATE VECTOR INDEX IX_Embeddings ON ChunkEmbeddings(embedding)
-    --   WITH (METRIC = 'cosine', TYPE = DISKANN);
 */
 
 USE LennyWisdomDB;
