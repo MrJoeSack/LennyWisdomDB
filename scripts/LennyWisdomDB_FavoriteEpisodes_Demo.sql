@@ -13,6 +13,7 @@
     Episode 83:  Ebi Atawodi (YouTube, Netflix, Uber) - Product Vision
     Episode 218: Mike Krieger (Anthropic CPO, Instagram co-founder) - AI Products
     Episode 230: Nikhyl Singhal (Meta VP Product) - Career Building
+    Episode 252: Richard Rumelt - Good Strategy, Bad Strategy
     Episode 270: Shaun Clowes (Confluent CPO) - AI & Data
 
     Note: GitLab (David DeSanto) and Tal Raviv episodes not in current transcript dump.
@@ -39,7 +40,7 @@ SELECT
     e.view_count,
     (SELECT COUNT(*) FROM EpisodeChunks ec WHERE ec.episode_id = e.episode_id) AS chunk_count
 FROM Episodes e
-WHERE e.episode_id IN (83, 218, 230, 270);  -- Ebi, Mike Krieger, Nikhyl, Shaun
+WHERE e.episode_id IN (83, 218, 230, 252, 270);  -- Ebi, Mike Krieger, Nikhyl, Rumelt, Shaun
 GO
 
 -- View the favorite episodes
@@ -137,7 +138,36 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @career_embedding);
 GO
 
 -- ============================================================================
--- DEMO 4: Shaun Clowes - AI & Data Strategy
+-- DEMO 4: Richard Rumelt - Good Strategy, Bad Strategy
+-- "What makes a strategy good vs bad?"
+-- ============================================================================
+
+PRINT '=== DEMO 4: Good Strategy (Richard Rumelt) ===';
+
+DECLARE @strategy_embedding VECTOR(1024);
+
+SELECT TOP 1 @strategy_embedding = ce.embedding
+FROM ChunkEmbeddings ce
+JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
+WHERE ec.episode_id = 252  -- Richard Rumelt
+  AND (ec.chunk_text LIKE '%strategy%' OR ec.chunk_text LIKE '%diagnosis%' OR ec.chunk_text LIKE '%kernel%');
+
+SELECT TOP 5
+    'Richard Rumelt' AS expert,
+    LEFT(ec.speaker_question, 150) AS lenny_asks,
+    LEFT(ec.speaker_answer, 400) AS rumelt_answers,
+    ec.start_timestamp,
+    CONCAT('https://youtube.com/watch?v=', e.video_id, '&t=', ec.start_seconds, 's') AS jump_to_clip,
+    CAST(VECTOR_DISTANCE('cosine', ce.embedding, @strategy_embedding) AS DECIMAL(5,3)) AS relevance
+FROM ChunkEmbeddings ce
+JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
+JOIN Episodes e ON ec.episode_id = e.episode_id
+WHERE e.episode_id = 252
+ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @strategy_embedding);
+GO
+
+-- ============================================================================
+-- DEMO 5: Shaun Clowes - AI & Data Strategy
 -- "Why is data so important for AI products?"
 -- ============================================================================
 
@@ -189,7 +219,7 @@ SELECT TOP 10
 FROM ChunkEmbeddings ce
 JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN Episodes e ON ec.episode_id = e.episode_id
-WHERE e.episode_id IN (83, 218, 230, 270)  -- Only favorite episodes
+WHERE e.episode_id IN (83, 218, 230, 252, 270)  -- Favorite episodes
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @leadership_embedding);
 GO
 

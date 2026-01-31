@@ -65,7 +65,7 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query_embedding);
 
 | File | Description |
 |------|-------------|
-| `LennyWisdomDB.bak` | Full database backup with data and embeddings (~128MB, Git LFS) |
+| [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/download/v1.0/LennyWisdomDB.bak) | Full database backup (~128MB, download from Releases) |
 | `scripts/LennyWisdomDB_Schema.sql` | Database and table creation script |
 | `scripts/LennyWisdomDB_SampleQueries.sql` | Example semantic search queries |
 | `scripts/LennyWisdomDB_FavoriteEpisodes_Demo.sql` | Focused demos on select episodes |
