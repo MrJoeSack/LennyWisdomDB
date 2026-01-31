@@ -1,6 +1,6 @@
 """
 Parse Lenny's Podcast transcripts into Q&A pairs (semantic chunks).
-Batch: Episodes 1-75
+
 - Groups Lenny's questions with guest answers
 - Strips sponsor/ad segments
 - Splits long answers with overlap, prepending question as context
@@ -12,9 +12,9 @@ from typing import List
 
 CONN_STR = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost;DATABASE=LennyWisdomDB;Trusted_Connection=yes;"
 
-# Batch range
-EPISODE_MIN = 226
-EPISODE_MAX = 303
+# Episode range to process
+EPISODE_MIN = 1
+EPISODE_MAX = 999
 
 # Chunk size limits (in characters)
 MAX_CHUNK_SIZE = 2500  # ~625 tokens

@@ -23,7 +23,7 @@ USE LennyWisdomDB;
 GO
 
 -- ============================================================================
--- EmbeddingModels - Track embedding model provenance (Module 03 pattern)
+-- EmbeddingModels - Track embedding model provenance
 -- ============================================================================
 CREATE TABLE EmbeddingModels (
     model_id INT PRIMARY KEY IDENTITY(1,1),
@@ -121,7 +121,7 @@ CREATE TABLE EpisodeChunks (
 GO
 
 -- ============================================================================
--- ChunkEmbeddings - Normalized embedding storage (Module 03 pattern)
+-- ChunkEmbeddings - Normalized embedding storage
 -- ============================================================================
 CREATE TABLE ChunkEmbeddings (
     embedding_id INT PRIMARY KEY IDENTITY(1,1),

@@ -2,17 +2,15 @@
     LennyWisdomDB - Search Phrases Table
 
     Pre-embedded queries for semantic search - no LIKE wildcards needed.
-    Pattern follows SemanticShoresDB approach.
-
     Queries phrased conversationally to match how podcast content
-    actually discusses these topics (per Sutskever's recommendation).
+    actually discusses these topics.
 */
 
 USE LennyWisdomDB;
 GO
 
 -- ============================================================================
--- Search Phrases Table (matches SemanticShoresDB pattern)
+-- Search Phrases Table
 -- ============================================================================
 
 IF OBJECT_ID('search_phrases', 'U') IS NOT NULL

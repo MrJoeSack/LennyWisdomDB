@@ -5,8 +5,7 @@
     - VECTOR(1024) data type for storing embeddings
     - VECTOR_DISTANCE('cosine', ...) for similarity search
 
-    Uses pre-embedded search phrases (73 common PM questions) - no LIKE wildcards.
-    Pattern inspired by SemanticShoresDB.
+    Uses pre-embedded search phrases (73 common PM questions) - no LIKE wildcards needed.
 
     At 21K chunks, brute-force VECTOR_DISTANCE search completes in ~75ms.
 */
