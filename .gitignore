@@ -1,0 +1,8 @@
+*.bak
+scripts/lenny_*.py
+scripts/LennyWisdomDB_SOTA_Migration.sql
+scripts/LennyWisdomDB_Schema.sql
+scripts/LennyWisdomDB_SampleQueries.sql
+scripts/LennyWisdomDB_SOTA_Queries.sql
+scripts/LennyWisdomDB_FavoriteEpisodes_Demo.sql
+scripts/LennyWisdomDB_SearchPhrases_Schema.sql
