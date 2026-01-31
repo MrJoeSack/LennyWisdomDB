@@ -29,6 +29,7 @@ FROM dbo.ChunkEmbeddings ce
 JOIN dbo.EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN dbo.Episodes e ON ec.episode_id = e.episode_id
 WHERE ec.split_part = 1
+  AND LEN(ec.speaker_answer) > 100
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 GO
 
@@ -103,6 +104,7 @@ JOIN dbo.EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
 JOIN dbo.Episodes e ON ec.episode_id = e.episode_id
 WHERE ec.content_type = 'main'
   AND ec.split_part = 1
+  AND LEN(ec.speaker_answer) > 100
   AND e.publish_date >= '2023-01-01'
   AND EXISTS (
       SELECT 1 FROM dbo.EpisodeTopics et
@@ -146,6 +148,7 @@ FROM (
     FROM dbo.ChunkEmbeddings ce
     JOIN dbo.EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
     JOIN dbo.Episodes e ON ec.episode_id = e.episode_id
+    WHERE LEN(ec.speaker_answer) > 100
 ) ranked
 WHERE rn = 1
 ORDER BY best_distance
@@ -182,6 +185,7 @@ FROM (
     JOIN dbo.EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
     JOIN dbo.Episodes e ON ec.episode_id = e.episode_id
     WHERE ec.split_part = 1
+      AND LEN(ec.speaker_answer) > 100
 ) ranked
 WHERE rn = 1
 ORDER BY distance
