@@ -6,7 +6,7 @@ A SQL Server 2025 vector search sample database. 21K chunks from 270 Lenny's Pod
 
 ## Quickstart
 
-1. **Download** [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.0) (162MB)
+1. **Download** [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.1) (166MB)
 2. **Restore** in SQL Server 2025 (RTM, not preview)
 3. **Run a semantic search:**
 
@@ -36,7 +36,7 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 | Episodes | 270 |
 | Q&A Chunks | 21,571 |
 | Embedding Model | snowflake-arctic-embed2 (1024 dim) |
-| Pre-embedded Search Phrases | 73 |
+| Pre-embedded Search Phrases | 1,076 |
 | Topics | 87 |
 
 ## Features
@@ -62,7 +62,7 @@ ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query);
 |-------|---------|
 | `ChunkEmbeddings` | 1024-dim vector per chunk |
 | `EmbeddingModels` | Model versioning (name, dimensions, provider) |
-| `search_phrases` | 73 pre-embedded queries by category |
+| `search_phrases` | 1,076 pre-embedded queries by category |
 
 **Deduplication columns** in `EpisodeChunks`:
 - `qa_group_id` - links split chunks to same Q&A
@@ -83,7 +83,7 @@ Each chunk = one complete Q&A exchange (Lenny's question + guest's answer). This
 
 | File | Description |
 |------|-------------|
-| [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.0) | Database backup (162MB) |
+| [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.1) | Database backup (166MB) |
 | [`LennyWisdomDB_Queries.sql`](scripts/LennyWisdomDB_Queries.sql) | Sample queries (semantic, hybrid, filtered, parent retrieval) |
 
 ## Requirements
