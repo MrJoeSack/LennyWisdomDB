@@ -83,7 +83,7 @@ ORDER BY c.rrf_score DESC;
 GO
 
 -- ============================================================================
--- 3. PRE-FILTERED SEARCH
+-- 3. FILTERED SEARCH
 -- Narrow results by topic and date, then rank by vector distance
 -- ============================================================================
 
