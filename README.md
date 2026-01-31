@@ -1,6 +1,6 @@
 # LennyWisdomDB
 
-A SQL Server 2025 vector search sample database built from [Lenny's Podcast](https://www.lennysnewsletter.com/podcast) transcripts. Contains 24,000+ semantically chunked Q&A pairs from 300+ episodes with product leaders like Brian Chesky, Shreyas Doshi, and Marty Cagan.
+A SQL Server 2025 vector search sample database built from [Lenny's Podcast](https://www.lennysnewsletter.com/podcast) transcripts. Contains 21K+ semantically chunked Q&A pairs from 270 episodes with product leaders like Brian Chesky, Shreyas Doshi, and Marty Cagan.
 
 ## SQL Server 2025 Features Used
 
@@ -9,7 +9,7 @@ Uses **RTM (non-preview) features only**:
 - `VECTOR(1024)` - Native vector data type for storing embeddings
 - `VECTOR_DISTANCE('cosine', ...)` - Similarity search function
 
-At 24K chunks, brute-force vector search completes in ~75ms. No vector index required at this scale.
+At 21K chunks, brute-force vector search completes in ~75ms. No vector index required at this scale.
 
 ## Database Stats
 
@@ -17,7 +17,8 @@ At 24K chunks, brute-force vector search completes in ~75ms. No vector index req
 |--------|-------|
 | Episodes | 270 |
 | Q&A Chunks | 21,571 |
-| Embeddings | 21,571 |
+| Chunk Embeddings | 21,571 |
+| Search Phrases | 73 |
 | Topics | 87 |
 | Embedding Model | snowflake-arctic-embed2 (1024 dim) |
 
@@ -28,6 +29,7 @@ Follows normalized embedding patterns from the [Vector Search in Practice](https
 - **Episodes** - Podcast metadata (guest, title, YouTube URL, publish date)
 - **EpisodeChunks** - Q&A pairs with timestamps for YouTube deep-linking
 - **ChunkEmbeddings** - 1024-dimension vectors with model versioning
+- **search_phrases** - 73 pre-embedded PM questions for instant search
 - **Topics** - 87 topic categories mapped from Lenny's index
 - **EpisodeTopics** - Many-to-many episode-topic mappings
 
@@ -40,16 +42,18 @@ Follows normalized embedding patterns from the [Vector Search in Practice](https
 - Sponsor segments stripped automatically
 - Timestamps preserved for YouTube linking
 
-## Sample Queries
+## Sample Query
+
+Uses pre-embedded search phrases - no LIKE wildcards needed:
 
 ```sql
--- Semantic search: find chunks about roadmaps
+-- Get pre-computed embedding for "product market fit"
 DECLARE @query_embedding VECTOR(1024);
-SELECT TOP 1 @query_embedding = ce.embedding
-FROM ChunkEmbeddings ce
-JOIN EpisodeChunks ec ON ce.chunk_id = ec.chunk_id
-WHERE ec.chunk_text LIKE '%roadmap%';
+SELECT @query_embedding = search_vector
+FROM search_phrases
+WHERE search_phrase = 'signs you have product market fit and how to find it';
 
+-- Semantic search across all episodes
 SELECT TOP 10
     e.guest_name,
     LEFT(ec.chunk_text, 300) AS preview,
@@ -61,19 +65,35 @@ JOIN Episodes e ON ec.episode_id = e.episode_id
 ORDER BY VECTOR_DISTANCE('cosine', ce.embedding, @query_embedding);
 ```
 
+## Search Phrase Categories
+
+| Category | Phrases | Examples |
+|----------|---------|----------|
+| strategy | 10 | product vision, roadmaps, prioritization |
+| leadership | 10 | managing up, feedback, influence |
+| career | 10 | promotions, IC vs manager, interviews |
+| growth | 10 | metrics, PLG, retention, churn |
+| ai | 8 | AI products, AI tools for PMs |
+| execution | 8 | meetings, PRDs, shipping faster |
+| discovery | 7 | user research, validation |
+| culture | 5 | hiring PMs, onboarding |
+| startup | 5 | founder advice, fundraising |
+
 ## Files
 
 | File | Description |
 |------|-------------|
-| [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/download/v1.0/LennyWisdomDB.bak) | Full database backup (~128MB, download from Releases) |
+| [`LennyWisdomDB.bak`](https://github.com/MrJoeSack/LennyWisdomDB/releases/tag/v1.0) | Database backup (~128MB, download from Releases) |
 | `scripts/LennyWisdomDB_Schema.sql` | Database and table creation script |
-| `scripts/LennyWisdomDB_SampleQueries.sql` | Example semantic search queries |
+| `scripts/LennyWisdomDB_SampleQueries.sql` | Semantic search queries using search_phrases |
+| `scripts/LennyWisdomDB_SearchPhrases_Schema.sql` | Search phrases table schema |
 | `scripts/LennyWisdomDB_FavoriteEpisodes_Demo.sql` | Focused demos on select episodes |
 | `scripts/lenny_load_episodes.py` | Parse transcripts and load episode metadata |
 | `scripts/lenny_load_topics.py` | Load topics from index and map to episodes |
 | `scripts/lenny_chunk_qa.py` | Parse Q&A pairs, strip sponsors, apply chunking |
-| `scripts/lenny_generate_embeddings.py` | Generate embeddings via Ollama batch API |
-| `scripts/lenny_fix_data_quality.py` | Data cleanup script (duplicates, sponsors, etc.) |
+| `scripts/lenny_generate_embeddings.py` | Generate chunk embeddings via Ollama |
+| `scripts/lenny_embed_search_phrases.py` | Generate search phrase embeddings |
+| `scripts/lenny_fix_data_quality.py` | Data cleanup (duplicates, sponsors, etc.) |
 
 ## Requirements
 
